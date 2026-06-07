@@ -86,6 +86,14 @@ export function startRuntimeConfigHotReload(options: { pollIntervalMs?: number }
           queueHotReloadCheck("hot-reload:fs-watch");
         }
       });
+      sqliteWatcher.on("error", (error) => {
+        console.warn(
+          "[HOT_RELOAD] SQLite file watch failed, polling only:",
+          error instanceof Error ? error.message : error
+        );
+        sqliteWatcher?.close();
+        sqliteWatcher = null;
+      });
     } catch (error) {
       console.warn(
         "[HOT_RELOAD] SQLite file watch unavailable, polling only:",
